@@ -11,7 +11,7 @@ services:
   thupat-ms:
     image: unitrack/thupat-ms
     restart: always
-    container_name: ${CONTAINER_PREFIX}-thupat-ms
+    container_name: thu-thupat-ms
     networks:
       net:
     volumes:
