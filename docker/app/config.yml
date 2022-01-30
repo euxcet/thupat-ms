@@ -1,0 +1,16 @@
+rest_verticle:
+  port: 8098
+  instance: 4
+
+instances: 4
+
+micro_srv_name: thupat
+
+# cluster 参数
+# 如果所有docker运行在一个host上面且都在同一个网段内，此项参数可以不用设置
+#cluster:
+#  host: 192.168.3.33
+#  port: 5702
+#  members:
+#    - 192.168.3.33
+#    - 192.168.3.33

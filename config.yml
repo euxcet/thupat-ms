@@ -1,0 +1,3 @@
+rest_verticle:
+  port: 8098
+  instance: 4
