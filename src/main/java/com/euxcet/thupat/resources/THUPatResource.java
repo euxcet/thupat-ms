@@ -24,12 +24,6 @@ public class THUPatResource {
         router.get("/ping").handler(this::ping);
         router.get("/ping-json").handler(this::ping_json);
 
-        router.get("/test").handler(context -> {
-            HttpServerResponse response = context.response();
-            HttpUtils.setHttpHeader(response);
-            response.end("hello!");
-        });
-
         mainRouter.mountSubRouter(PATH, router);
         HttpUtils.dumpRestApi(router, PATH, logger);
     }

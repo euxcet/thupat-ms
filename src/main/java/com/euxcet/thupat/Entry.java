@@ -118,42 +118,6 @@ public class Entry {
                     logger.info("worker pool size: {}", workerPoolSize);
 
                     CLUSTER_VERTX = handler.result();
-                    /*
-                    SRV_DISCOVERY = ServiceDiscovery.create(CLUSTER_VERTX);
-
-                    DeploymentOptions deploymentOptions = new DeploymentOptions()
-                            .setInstances(config.instances)
-                            .setWorker(true)
-                            .setWorkerPoolSize(vertxOptions.getWorkerPoolSize())
-                            .setConfig(new JsonObject()
-                                    .put("region", config.sms_server.region)
-                                    .put("app_id", config.sms_server.app_id)
-                                    .put("access_key", config.sms_server.access_key)
-                                    .put("secret_key", config.sms_server.secret_key)
-                                    .put("expire_in_seconds", config.sms_server.expire_in_seconds));
-
-                    CLUSTER_VERTX.deployVerticle(SmsVerticle.class, deploymentOptions, h -> {
-                        if (h.failed())
-                            logger.error("failed to deploy push proxy vertical: " + h.cause());
-                        else {
-                            logger.info("succeeded to deploy push proxy vertical: " + h.result());
-
-                            verticalMap.put(h.result(), "doc ocr vertical");
-
-                            Record srvRecord = EventBusService.createRecord(config.micro_srv_name, EventConst.SMS.REQ.ID, SmsVerticle.class.getName());
-
-                            SRV_DISCOVERY.publish(srvRecord, dh -> {
-                                if (dh.failed()) {
-                                    logger.error(dh.cause().getMessage());
-                                }
-                                else {
-                                    recordMap.put(h.result(), srvRecord);
-                                    logger.info("record published: name, " + srvRecord.getName() + "; location, " + srvRecord.getLocation());
-                                }
-                            });
-                        }
-                    });
-                     */
 
                     JsonObject restVerticlePara = new JsonObject();
                     restVerticlePara.put("port", config.rest_verticle.port);
