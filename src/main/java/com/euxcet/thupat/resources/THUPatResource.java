@@ -21,10 +21,10 @@ public class THUPatResource {
     private static String PATH = "/thupat/" + VER;
 
     public void register(Router mainRouter, Router router) {
-//        router.post("/").handler(this::sendSms);
-//        router.get("/reply").handler(this::getSmsReply);
+        router.get("/ping").handler(this::ping);
+        router.get("/ping-json").handler(this::ping_json);
 
-        router.get("/").handler(context -> {
+        router.get("/test").handler(context -> {
             HttpServerResponse response = context.response();
             HttpUtils.setHttpHeader(response);
             response.end("hello!");
@@ -34,76 +34,17 @@ public class THUPatResource {
         HttpUtils.dumpRestApi(router, PATH, logger);
     }
 
-    /*
-    protected void sendSms(RoutingContext context) {
+    protected void ping(RoutingContext context) {
         HttpServerResponse response = context.response();
         HttpUtils.setHttpHeader(response);
-
-        JsonObject data = context.getBodyAsJson();
-        String phone = data.getString("phone");
-        String signId = data.getString("sign_id");
-        String templateId = data.getString("template_id");
-        String checkNo = data.getString("check_no");
-
-        JsonObject para = new JsonObject()
-                .put(EventConst.SMS.REQ.KEYS.PHONE, phone)
-                .put(EventConst.SMS.REQ.KEYS.SIGN_ID, signId)
-                .put(EventConst.SMS.REQ.KEYS.TEMPLATE_ID, templateId)
-                .put(EventConst.SMS.REQ.KEYS.PARA, new JsonArray().add(checkNo));
-
-        DeliveryOptions deliveryOptions = new DeliveryOptions();
-        deliveryOptions.setSendTimeout(DeliveryOptions.DEFAULT_TIMEOUT);
-        deliveryOptions.addHeader(EventConst.HEADERS.ACTION, EventConst.SMS.REQ.ACTIONS.SEND_SMS);
-
-        context.vertx().eventBus().<JsonObject>request(EventConst.SMS.REQ.ID, para, deliveryOptions, handler -> {
-            if (handler.failed()) {
-                response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-                JsonObject res = new JsonObject();
-                res.put("code", HttpStatus.SC_INTERNAL_SERVER_ERROR);
-                res.put("msg", handler.cause().getMessage());
-                response.end(res.encodePrettily());
-            }
-            else {
-                JsonObject rt = handler.result().body();
-                response.setStatusCode(HttpStatus.SC_OK);
-                response.end(rt.encodePrettily());
-            }
-        });
+        response.end("pong!");
     }
-    protected void getSmsReply(RoutingContext context) {
+
+    protected void ping_json(RoutingContext context) {
         HttpServerResponse response = context.response();
         HttpUtils.setHttpHeader(response);
-
-        String phone = context.request().getParam("phone");
-        if (StringUtils.isNullOrEmpty(phone)) {
-            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
-            JsonObject rt = new JsonObject();
-            rt.put("msg", "phone cannot be null");
-            response.end(rt.encodePrettily());
-            return;
-        }
-
-        JsonObject para = new JsonObject()
-                .put(EventConst.SMS.REQ.KEYS.PHONE, phone);
-
-        DeliveryOptions deliveryOptions = new DeliveryOptions();
-        deliveryOptions.setSendTimeout(DeliveryOptions.DEFAULT_TIMEOUT);
-        deliveryOptions.addHeader(EventConst.HEADERS.ACTION, EventConst.SMS.REQ.ACTIONS.QUERY_REPLY);
-
-        context.vertx().eventBus().<JsonObject>request(EventConst.SMS.REQ.ID, para, deliveryOptions, handler -> {
-            if (handler.failed()) {
-                response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
-                JsonObject res = new JsonObject();
-                res.put("code", HttpStatus.SC_INTERNAL_SERVER_ERROR);
-                res.put("msg", handler.cause().getMessage());
-                response.end(res.encodePrettily());
-            }
-            else {
-                JsonObject rt = handler.result().body();
-                response.setStatusCode(HttpStatus.SC_OK);
-                response.end(rt.encodePrettily());
-            }
-        });
+        JsonObject res = new JsonObject();
+        res.put("msg", "pong!");
+        response.end(res.encode());
     }
-     */
 }
