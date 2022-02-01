@@ -1,6 +1,7 @@
 package com.euxcet.thupat;
 
 import com.euxcet.thupat.config.SysConfigPara;
+import com.futureinteraction.bas.event.EventConst;
 import com.google.gson.Gson;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.JoinConfig;
@@ -119,6 +120,23 @@ public class Entry {
 
                     CLUSTER_VERTX = handler.result();
 
+                    // THUPAT
+                    DeploymentOptions deploymentOptions = new DeploymentOptions()
+                            .setInstances(config.thupat_verticle.instance)
+                            .setWorker(true)
+                            .setWorkerPoolSize(vertxOptions.getWorkerPoolSize());
+
+                    CLUSTER_VERTX.deployVerticle(THUPatVerticle.class, deploymentOptions, h -> {
+                        if (h.failed())
+                            logger.error("failed to deploy push proxy vertical: " + h.cause());
+                        else {
+                            logger.info("succeeded to deploy push proxy vertical: " + h.result());
+                            verticles.put(h.result(), "thupat vertical");
+                        }
+                    });
+
+
+                    // REST
                     JsonObject restVerticlePara = new JsonObject();
                     restVerticlePara.put("port", config.rest_verticle.port);
                     if (config.rest_verticle.host != null)

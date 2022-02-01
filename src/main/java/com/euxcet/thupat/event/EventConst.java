@@ -6,20 +6,16 @@ public interface EventConst {
         String ACTION = "action";
     }
 
-    interface SMS {
+    interface THUPAT {
         interface REQ {
-            String ID = "sms";
+            String ID = "thupat";
 
             interface ACTIONS {
-                String SEND_SMS = "send-check-no-sms";
-                String QUERY_REPLY = "query-reply";
+                String REVERSE = "reverse";
             }
 
             interface KEYS {
-                String TEMPLATE_ID = "template-id";
-                String SIGN_ID = "sign-id";
-                String PHONE = "phone";
-                String PARA = "para";
+                String STR = "str";
             }
         }
     }

@@ -1,3 +1,6 @@
 rest_verticle:
   port: 8098
+  instance: 2
+
+thupat_verticle:
   instance: 4

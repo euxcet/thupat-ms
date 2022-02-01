@@ -20,6 +20,10 @@ public class SysConfigPara {
         public int worker_pool_size;
     }
 
+    public static class THUPatVerticlePara {
+        public int instance;
+    }
+
     public static SysConfigPara load(String path) throws FileNotFoundException {
         try {
             logger.debug("config:\n {}", new String(new FileInputStream(path).readAllBytes()));
@@ -42,4 +46,6 @@ public class SysConfigPara {
     public RestVerticlePara rest_verticle;
 
     public ClusterPara cluster;
+
+    public THUPatVerticlePara thupat_verticle;
 }
