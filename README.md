@@ -41,3 +41,27 @@ cd docker
 docker-compose up
 ```
 
+## Database
+
+Database name: thupat
+
+In order to make the code work, you need to create the database and the required tables first.
+
+Todo: add redis to cache data.
+
+### example_table
+
+This table is just an example.
+
+```mysql
+create table example_table(id int unsigned auto_increment, time int, location varchar(255), primary key (id));
+```
+
+Related routes:
+
+1. /thupat/0.1/add-one, insert a row into the table. (POST)
+
+2. /thupat/0.1/delete-one, delete a row from the table by id. (POST)
+3. /thupat/0.1/get-one, select a row from the table by id. (GET)
+
+These routes only accept requests with MIME type "*/json", you can check how to access them with curl from the examples in the *request* folder.
