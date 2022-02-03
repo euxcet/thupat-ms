@@ -1,4 +1,4 @@
-package com.euxcet.db.proxy;
+package com.euxcet.thupat.db.proxy;
 
 import com.euxcet.thupat.event.ErrorCodes;
 import io.vertx.core.json.JsonObject;

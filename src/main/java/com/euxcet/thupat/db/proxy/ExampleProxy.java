@@ -1,7 +1,7 @@
-package com.euxcet.db.proxy;
+package com.euxcet.thupat.db.proxy;
 
-import com.euxcet.db.dao.ExampleDao;
-import com.euxcet.model.ExampleModel;
+import com.euxcet.thupat.db.dao.ExampleDao;
+import com.euxcet.thupat.model.ExampleModel;
 import com.euxcet.thupat.event.ErrorCodes;
 import com.euxcet.thupat.event.EventConst;
 import com.google.gson.Gson;

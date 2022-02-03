@@ -1,7 +1,7 @@
-package com.euxcet.db;
+package com.euxcet.thupat.db;
 
-import com.euxcet.db.proxy.AbstractProxy;
-import com.euxcet.db.proxy.ExampleProxy;
+import com.euxcet.thupat.db.proxy.AbstractProxy;
+import com.euxcet.thupat.db.proxy.ExampleProxy;
 import com.euxcet.thupat.config.SysConfigPara;
 import com.euxcet.thupat.event.ErrorCodes;
 import com.euxcet.thupat.event.EventConst;

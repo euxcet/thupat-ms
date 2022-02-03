@@ -1,4 +1,4 @@
-package com.euxcet.db.dao;
+package com.euxcet.thupat.db.dao;
 
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;

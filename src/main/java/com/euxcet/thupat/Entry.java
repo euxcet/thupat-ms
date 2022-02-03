@@ -1,6 +1,6 @@
 package com.euxcet.thupat;
 
-import com.euxcet.db.DatabaseVerticle;
+import com.euxcet.thupat.db.DatabaseVerticle;
 import com.euxcet.thupat.config.SysConfigPara;
 import com.google.gson.Gson;
 import com.hazelcast.config.Config;
@@ -12,9 +12,6 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.eventbus.EventBusOptions;
 import io.vertx.core.json.JsonObject;
-import io.vertx.servicediscovery.Record;
-import io.vertx.servicediscovery.ServiceDiscovery;
-import io.vertx.servicediscovery.types.EventBusService;
 import io.vertx.spi.cluster.hazelcast.HazelcastClusterManager;
 import org.apache.commons.cli.*;
 import org.slf4j.Logger;

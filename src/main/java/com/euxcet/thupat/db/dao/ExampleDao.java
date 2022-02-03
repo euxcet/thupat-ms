@@ -1,6 +1,6 @@
-package com.euxcet.db.dao;
+package com.euxcet.thupat.db.dao;
 
-import com.euxcet.model.ExampleModel;
+import com.euxcet.thupat.model.ExampleModel;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;

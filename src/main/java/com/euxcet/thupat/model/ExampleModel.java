@@ -1,4 +1,4 @@
-package com.euxcet.model;
+package com.euxcet.thupat.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
