@@ -1,7 +1,7 @@
 package com.euxcet.db;
 
 import com.euxcet.db.proxy.AbstractProxy;
-import com.euxcet.db.proxy.THUPatProxy;
+import com.euxcet.db.proxy.ExampleProxy;
 import com.euxcet.thupat.config.SysConfigPara;
 import com.euxcet.thupat.event.ErrorCodes;
 import com.euxcet.thupat.event.EventConst;
@@ -21,7 +21,7 @@ public class DatabaseVerticle extends AbstractVerticle {
 
     private Gson gson = new Gson();
 
-    private THUPatProxy proxy;
+    private ExampleProxy proxy;
     private JDBCClient client;
     private MessageConsumer<JsonObject> consumer;
 
@@ -34,7 +34,7 @@ public class DatabaseVerticle extends AbstractVerticle {
         );
         client = JDBCClient.createShared(vertx, new JsonObject(para.database_para));
 
-        proxy = new THUPatProxy(vertx, client);
+        proxy = new ExampleProxy(vertx, client);
         consumer = vertx.eventBus().consumer(EventConst.THUPAT_DB.ID, this::onMsg);
 
         promise.complete();

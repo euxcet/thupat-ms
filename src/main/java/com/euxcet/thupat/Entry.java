@@ -2,7 +2,6 @@ package com.euxcet.thupat;
 
 import com.euxcet.db.DatabaseVerticle;
 import com.euxcet.thupat.config.SysConfigPara;
-import com.futureinteraction.bas.event.EventConst;
 import com.google.gson.Gson;
 import com.hazelcast.config.Config;
 import com.hazelcast.config.JoinConfig;

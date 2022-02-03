@@ -225,11 +225,11 @@
             <artifactId>bcpkix-jdk15on</artifactId>
             <version>1.68</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>app.futureinteraction</groupId>
             <artifactId>bas-utils</artifactId>
             <version>0.0.1</version>
-        </dependency>
+        </dependency-->
     </dependencies>
 
     <build>

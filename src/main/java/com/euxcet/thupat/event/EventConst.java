@@ -11,11 +11,12 @@ public interface EventConst {
         interface REQ {
             interface ACTIONS {
                 String ADD_ONE = "add_one";
-                String GET_ONE = "get_one";
                 String DELETE_ONE = "delete_one";
+                String GET_ONE = "get_one";
             }
 
             interface KEYS {
+                String ID = "id";
                 String DATA = "data";
                 String TIME = "time";
                 String LOCATION = "location";

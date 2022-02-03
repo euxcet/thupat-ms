@@ -10,6 +10,8 @@ import io.vertx.ext.sql.ResultSet;
 import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.sql.UpdateResult;
 
+import java.util.List;
+
 public abstract class AbstractDao {
     protected JDBCClient client;
 
@@ -83,6 +85,81 @@ public abstract class AbstractDao {
                         }
                     });
                 });
+            }
+        });
+    }
+
+    protected void commonDelete(String sql, long id, Handler<AsyncResult<Integer>> done) {
+        client.getConnection(conn -> {
+            if (conn.failed()) {
+                done.handle(Future.failedFuture(conn.cause()));
+            } else {
+                JsonArray para = new JsonArray().add(id);
+                commonDelete(conn.result(), sql, para, done);
+            }
+        });
+    }
+
+    private void commonDelete(SQLConnection conn, String sql, JsonArray para, Handler<AsyncResult<Integer>> done) {
+        updateWithFuture(conn, sql, para, handler -> {
+            if (handler.failed()) {
+                done.handle(Future.failedFuture(handler.cause()));
+            } else {
+                int deleted = (handler.result()).getUpdated();
+                done.handle(Future.succeededFuture(deleted));
+            }
+        });
+    }
+
+    protected void commonGetOne(String sql, JsonArray para, Handler<AsyncResult<JsonArray>> done) {
+        client.getConnection(conn -> {
+            if (conn.failed()) {
+                done.handle(Future.failedFuture(conn.cause()));
+            } else {
+                commonGetOne(conn.result(), sql, para, queryDone -> {
+                    if (queryDone.failed())
+                        done.handle(Future.failedFuture(queryDone.cause()));
+                    else
+                        done.handle(Future.succeededFuture(queryDone.result()));
+
+                    // and close the connection
+                    conn.result().close(closeDone -> {
+                        if (closeDone.failed()) {
+                            throw new RuntimeException(closeDone.cause());
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    protected void commonGetOne(SQLConnection conn, String sql, Handler<AsyncResult<JsonArray>> done) {
+        queryWithFuture(conn, sql, handler -> {
+            if (handler.failed()) {
+                done.handle(Future.failedFuture(handler.cause()));
+            } else {
+                List<JsonArray> jsonArrayList = handler.result().getResults();
+                if (jsonArrayList.isEmpty()) {
+                    done.handle(Future.succeededFuture(null));
+                } else {
+                    done.handle(Future.succeededFuture(jsonArrayList.get(0)));
+                }
+            }
+        });
+    }
+
+    protected void commonGetOne(SQLConnection conn, String sql, JsonArray para, Handler<AsyncResult<JsonArray>> done) {
+
+        queryWithFuture(conn, sql, para, handler -> {
+            if (handler.failed()) {
+                done.handle(Future.failedFuture(handler.cause()));
+            } else {
+                List<JsonArray> jsonArrayList = handler.result().getResults();
+                if (jsonArrayList.isEmpty()) {
+                    done.handle(Future.succeededFuture(null));
+                } else {
+                    done.handle(Future.succeededFuture(jsonArrayList.get(0)));
+                }
             }
         });
     }

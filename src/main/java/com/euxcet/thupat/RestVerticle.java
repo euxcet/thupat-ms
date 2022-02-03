@@ -80,8 +80,8 @@ public class RestVerticle extends AbstractVerticle {
     }
 
     private void regRestApi(Router mainRouter) {
-        Router smsRouter = Router.router(vertx);
-        new THUPatResource().register(mainRouter, smsRouter);
+        Router router = Router.router(vertx);
+        new THUPatResource().register(mainRouter, router);
     }
 
     @Override
