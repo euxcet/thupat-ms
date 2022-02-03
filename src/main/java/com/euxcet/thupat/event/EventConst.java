@@ -6,16 +6,44 @@ public interface EventConst {
         String ACTION = "action";
     }
 
-    interface THUPAT {
+    interface THUPAT_DB {
+        String ID = "thupat_db";
         interface REQ {
-            String ID = "thupat";
+            interface ACTIONS {
+                String ADD_ONE = "add_one";
+                String GET_ONE = "get_one";
+                String DELETE_ONE = "delete_one";
+            }
 
+            interface KEYS {
+                String DATA = "data";
+                String TIME = "time";
+                String LOCATION = "location";
+            }
+        }
+
+        interface REPLY {
+            interface COMMON_KEYS {
+                String RESULT = "result";
+            }
+        }
+    }
+
+    interface THUPAT_WEB {
+        String ID = "thupat_web";
+        interface REQ {
             interface ACTIONS {
                 String REVERSE = "reverse";
             }
 
             interface KEYS {
                 String STR = "str";
+            }
+        }
+
+        interface REPLY {
+            interface COMMON_KEYS {
+                String RESULT = "result";
             }
         }
     }

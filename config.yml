@@ -4,3 +4,13 @@ rest_verticle:
 
 thupat_verticle:
   instance: 4
+
+database_verticle:
+  database_para: '{
+                "url": "jdbc:mysql://127.0.0.1:3306/files?useUnicode=true&characterEncoding=utf8&autoReconnect=true",
+                "driver_class": "com.mysql.cj.jdbc.Driver",
+                "max_pool_size": 100,
+                "user": "root",
+                "password": "root"
+           }'
+  instance: 2

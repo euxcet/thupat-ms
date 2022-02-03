@@ -9,6 +9,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.ext.web.handler.BodyHandler;
 import org.apache.http.HttpStatus;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.slf4j.Logger;
@@ -26,8 +27,43 @@ public class THUPatResource {
         router.get("/ping-json").handler(this::ping_json);
         router.get("/reverse").handler(this::reverse);
 
+        // database
+        router.get("/add-one").handler(this::addOne);
+
+        router.route().handler(BodyHandler.create());
+
         mainRouter.mountSubRouter(PATH, router);
         HttpUtils.dumpRestApi(router, PATH, logger);
+    }
+
+    protected void addOne(RoutingContext context) {
+        HttpServerResponse response = context.response();
+        HttpUtils.setHttpHeader(response);
+
+        JsonObject data = new JsonObject()
+                .put(EventConst.THUPAT_DB.REQ.KEYS.TIME, 1000)
+                .put(EventConst.THUPAT_DB.REQ.KEYS.LOCATION, "Tsinghua University");
+        JsonObject para = new JsonObject()
+                .put(EventConst.THUPAT_DB.REQ.KEYS.DATA, data);
+
+        DeliveryOptions deliveryOptions = new DeliveryOptions();
+        deliveryOptions.setSendTimeout(DeliveryOptions.DEFAULT_TIMEOUT);
+        deliveryOptions.addHeader(EventConst.HEADERS.ACTION, EventConst.THUPAT_DB.REQ.ACTIONS.ADD_ONE);
+
+        context.vertx().eventBus().<JsonObject>request(EventConst.THUPAT_DB.ID, para, deliveryOptions, handler -> {
+            if (handler.failed()) {
+                response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                JsonObject res = new JsonObject();
+                res.put("code", HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                res.put("msg", handler.cause().getMessage());
+                response.end(res.encodePrettily());
+            }
+            else {
+                JsonObject rt = handler.result().body();
+                response.setStatusCode(HttpStatus.SC_OK);
+                response.end(rt.encodePrettily());
+            }
+        });
     }
 
     protected void reverse(RoutingContext context) {
@@ -44,13 +80,13 @@ public class THUPatResource {
         }
 
         JsonObject para = new JsonObject()
-                .put(EventConst.THUPAT.REQ.KEYS.STR, str);
+                .put(EventConst.THUPAT_WEB.REQ.KEYS.STR, str);
 
         DeliveryOptions deliveryOptions = new DeliveryOptions();
         deliveryOptions.setSendTimeout(DeliveryOptions.DEFAULT_TIMEOUT);
-        deliveryOptions.addHeader(EventConst.HEADERS.ACTION, EventConst.THUPAT.REQ.ACTIONS.REVERSE);
+        deliveryOptions.addHeader(EventConst.HEADERS.ACTION, EventConst.THUPAT_WEB.REQ.ACTIONS.REVERSE);
 
-        context.vertx().eventBus().<JsonObject>request(EventConst.THUPAT.REQ.ID, para, deliveryOptions, handler -> {
+        context.vertx().eventBus().<JsonObject>request(EventConst.THUPAT_WEB.ID, para, deliveryOptions, handler -> {
             if (handler.failed()) {
                 response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
                 JsonObject res = new JsonObject();

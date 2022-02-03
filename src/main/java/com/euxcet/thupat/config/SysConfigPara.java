@@ -13,9 +13,22 @@ import java.util.List;
 public class SysConfigPara {
     private static Logger logger = LoggerFactory.getLogger(SysConfigPara.class.getName());
 
+    public interface VerticleParaKey {
+        interface Verticle {
+            String DB = "db";
+            String CANAL = "canal";
+        }
+    }
+
     public static class RestVerticlePara {
         public String host;
         public int port;
+        public int instance;
+        public int worker_pool_size;
+    }
+
+    public static class DatabaseVerticlePara {
+        public String database_para;
         public int instance;
         public int worker_pool_size;
     }
@@ -44,6 +57,8 @@ public class SysConfigPara {
     }
 
     public RestVerticlePara rest_verticle;
+
+    public DatabaseVerticlePara database_verticle;
 
     public ClusterPara cluster;
 

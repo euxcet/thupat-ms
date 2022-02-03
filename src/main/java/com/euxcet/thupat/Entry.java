@@ -1,5 +1,6 @@
 package com.euxcet.thupat;
 
+import com.euxcet.db.DatabaseVerticle;
 import com.euxcet.thupat.config.SysConfigPara;
 import com.futureinteraction.bas.event.EventConst;
 import com.google.gson.Gson;
@@ -120,6 +121,23 @@ public class Entry {
 
                     CLUSTER_VERTX = handler.result();
 
+                    // DATABASE
+                    DeploymentOptions databaseOptions = new DeploymentOptions()
+                            .setInstances(config.database_verticle.instance)
+                            .setWorker(true)
+                            .setWorkerPoolSize(config.database_verticle.worker_pool_size == 0 ? workerPoolSize : config.database_verticle.worker_pool_size)
+                            .setConfig(new JsonObject()
+                                    .put(SysConfigPara.VerticleParaKey.Verticle.DB,
+                                            gson.toJson(config.database_verticle)));
+                    CLUSTER_VERTX.deployVerticle(DatabaseVerticle.class, databaseOptions, h -> {
+                        if (h.failed()) {
+                            logger.error("Failed to deploy database verticle: {}", h.result());
+                        } else {
+                            logger.info("Succeeded to deploy database verticle: " + h.result());
+                            verticles.put(h.result(), "thupat vertical");
+                        }
+                    });
+
                     // THUPAT
                     DeploymentOptions deploymentOptions = new DeploymentOptions()
                             .setInstances(config.thupat_verticle.instance)
@@ -128,9 +146,9 @@ public class Entry {
 
                     CLUSTER_VERTX.deployVerticle(THUPatVerticle.class, deploymentOptions, h -> {
                         if (h.failed())
-                            logger.error("failed to deploy push proxy vertical: " + h.cause());
+                            logger.error("Failed to deploy thupat verticle: " + h.cause());
                         else {
-                            logger.info("succeeded to deploy push proxy vertical: " + h.result());
+                            logger.info("Succeeded to deploy thupat verticle: " + h.result());
                             verticles.put(h.result(), "thupat vertical");
                         }
                     });
@@ -149,9 +167,9 @@ public class Entry {
 
                     CLUSTER_VERTX.deployVerticle(RestVerticle.class, restVerticleOptions, h -> {
                         if (h.failed())
-                            logger.error("failed to deploy rest server verticle: {}", h.cause().getMessage());
+                            logger.error("Failed to deploy rest server verticle: {}", h.cause().getMessage());
                         else {
-                            logger.info("succeeded to deploy rest server verticle: {}", h.result());
+                            logger.info("Succeeded to deploy rest server verticle: {}", h.result());
                             verticles.put(h.result(), "rest server verticle");
                         }
                     });

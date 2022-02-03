@@ -19,7 +19,7 @@ public class THUPatVerticle extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> future) {
-        msgConsumer = vertx.eventBus().consumer(EventConst.THUPAT.REQ.ID, this::onTHUPatMsg);
+        msgConsumer = vertx.eventBus().consumer(EventConst.THUPAT_WEB.ID, this::onTHUPatMsg);
         future.complete();
     }
 
@@ -32,10 +32,10 @@ public class THUPatVerticle extends AbstractVerticle {
         String action = msg.headers().get(ACTION);
         JsonObject body = msg.body();
 
-        String str = body.getString(EventConst.THUPAT.REQ.KEYS.STR);
+        String str = body.getString(EventConst.THUPAT_WEB.REQ.KEYS.STR);
 
         switch (action) {
-            case EventConst.THUPAT.REQ.ACTIONS.REVERSE:
+            case EventConst.THUPAT_WEB.REQ.ACTIONS.REVERSE:
                 JsonObject res = reverseString(str);
                 msg.reply(res);
                 break;
