@@ -7,7 +7,7 @@ thupat_verticle:
 
 database_verticle:
   database_para: '{
-                "url": "jdbc:mysql://172.40.0.14:3306/files?useUnicode=true&characterEncoding=utf8&autoReconnect=true",
+                "url": "jdbc:mysql://172.40.0.14:3306/thupat?useUnicode=true&characterEncoding=utf8&autoReconnect=true",
                 "driver_class": "com.mysql.cj.jdbc.Driver",
                 "max_pool_size": 100,
                 "user": "root",
