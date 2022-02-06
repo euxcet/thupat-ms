@@ -9,7 +9,8 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.ext.jdbc.JDBCClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.List;
+
+import java.util.*;
 
 public class ExampleDao extends AbstractDao {
     private static Logger logger = LoggerFactory.getLogger(ExampleDao.class.getName());
@@ -52,34 +53,21 @@ public class ExampleDao extends AbstractDao {
         return model;
     }
 
-    private List<ServiceModel> parseService(JsonArray data) {
-        if (data == null) {
+    private List<ServiceModel> parseService(List<JsonArray> data) {
+        if (data.isEmpty()) {
             return null;
         }
-        // ServiceModel model = new ServiceModel();
-        
-        // model.setId(data.getInteger(0));
-        // model.setName(data.getString(1));
-        // model.setType(data.getString(2));
-
-        final int length = data.size();
-        logger.info("length: " + length);
-        for (int idx = 0; idx < length; idx++) {
+        List<ServiceModel> serviceList = new ArrayList<ServiceModel>();
+        logger.info("length: " + data.size());
+        for (int i = 0; i < data.size(); i++) {
             ServiceModel model = new ServiceModel();
-            model.setId(data.getInteger(0));
-            model.setName(data.getString(1));
-            model.setType(data.getString(2));
-
+            JsonArray service = data.get(i);
+            model.setId(service.getInteger(0));
+            model.setName(service.getString(1));
+            model.setType(service.getString(2));
+            serviceList.add(model);
         }
-        // for (int idx = 0; idx < length; idx++) {
-        //     final Object item = data.getValue(idx);
-        //     if (item instanceof Integer) {
-        //         logger.info("int: " + (Integer) item);
-        //     } else if (item instanceof String) {
-        //         logger.info("String: " + item);
-        //     }
-        // }
-        return model;
+        return serviceList;
     }
 
     public void getOne(long id, Handler<AsyncResult<ExampleModel>> done) {
@@ -96,7 +84,7 @@ public class ExampleDao extends AbstractDao {
         });
     }
 
-    public void getServices(String type, Handler<AsyncResult<ServiceModel>> done) {
+    public void getServices(String type, Handler<AsyncResult<List<ServiceModel>>> done) {
         JsonArray para = new JsonArray();
         para.add(type);
 
@@ -104,8 +92,8 @@ public class ExampleDao extends AbstractDao {
             if (result.failed())
                 done.handle(Future.failedFuture(this.getClass().getName() + ": " + result.cause()));
             else {
-                JsonArray jsonArray = result.result();
-                done.handle(Future.succeededFuture(parseService(jsonArray)));
+                List<JsonArray> serviceList = result.result();
+                done.handle(Future.succeededFuture(parseService(serviceList)));
             }
         });
     }

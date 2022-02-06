@@ -167,12 +167,12 @@ public abstract class AbstractDao {
         });
     }
 
-    protected void commonGetOnes(String sql, JsonArray para, Handler<AsyncResult<JsonArray>> done) {
+    protected void commonGetOnes(String sql, JsonArray para, Handler<AsyncResult<List<JsonArray>>> done) {
         client.getConnection(conn -> {
             if (conn.failed()) {
                 done.handle(Future.failedFuture(conn.cause()));
             } else {
-                commonGetOne(conn.result(), sql, para, queryDone -> {
+                commonGetOnes(conn.result(), sql, para, queryDone -> {
                     if (queryDone.failed())
                         done.handle(Future.failedFuture(queryDone.cause()));
                     else
@@ -189,7 +189,7 @@ public abstract class AbstractDao {
         });
     }
 
-    protected void commonGetOnes(SQLConnection conn, String sql, JsonArray para, Handler<AsyncResult<JsonArray>> done) {
+    protected void commonGetOnes(SQLConnection conn, String sql, JsonArray para, Handler<AsyncResult<List<JsonArray>>> done) {
 
         queryWithFuture(conn, sql, para, handler -> {
             if (handler.failed()) {
@@ -199,8 +199,7 @@ public abstract class AbstractDao {
                 if (jsonArrayList.isEmpty()) {
                     done.handle(Future.succeededFuture(null));
                 } else {
-                    logger.info("size: " + jsonArrayList.size());
-                    done.handle(Future.succeededFuture(new JsonArray(jsonArrayList)));
+                    done.handle(Future.succeededFuture(jsonArrayList));
                 }
             }
         });
