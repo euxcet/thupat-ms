@@ -9,6 +9,7 @@ import io.vertx.core.json.JsonArray;
 import io.vertx.ext.jdbc.JDBCClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.List;
 
 public class ExampleDao extends AbstractDao {
     private static Logger logger = LoggerFactory.getLogger(ExampleDao.class.getName());
@@ -51,26 +52,33 @@ public class ExampleDao extends AbstractDao {
         return model;
     }
 
-    private ServiceModel parseService(JsonArray data) {
+    private List<ServiceModel> parseService(JsonArray data) {
         if (data == null) {
             return null;
         }
-        ServiceModel model = new ServiceModel();
+        // ServiceModel model = new ServiceModel();
         
-        model.setId(data.getInteger(0));
-        model.setName(data.getString(1));
-        model.setType(data.getString(2));
+        // model.setId(data.getInteger(0));
+        // model.setName(data.getString(1));
+        // model.setType(data.getString(2));
 
         final int length = data.size();
         logger.info("length: " + length);
         for (int idx = 0; idx < length; idx++) {
-            final Object item = data.getValue(idx);
-            if (item instanceof Integer) {
-                logger.info("int: " + (Integer) item);
-            } else if (item instanceof String) {
-                logger.info("String: " + item);
-            }
+            ServiceModel model = new ServiceModel();
+            model.setId(data.getInteger(0));
+            model.setName(data.getString(1));
+            model.setType(data.getString(2));
+
         }
+        // for (int idx = 0; idx < length; idx++) {
+        //     final Object item = data.getValue(idx);
+        //     if (item instanceof Integer) {
+        //         logger.info("int: " + (Integer) item);
+        //     } else if (item instanceof String) {
+        //         logger.info("String: " + item);
+        //     }
+        // }
         return model;
     }
 
@@ -92,7 +100,7 @@ public class ExampleDao extends AbstractDao {
         JsonArray para = new JsonArray();
         para.add(type);
 
-        commonGetOne(QUERY_SERVICE_BY_TYPE_SQL, para, result -> {
+        commonGetOnes(QUERY_SERVICE_BY_TYPE_SQL, para, result -> {
             if (result.failed())
                 done.handle(Future.failedFuture(this.getClass().getName() + ": " + result.cause()));
             else {

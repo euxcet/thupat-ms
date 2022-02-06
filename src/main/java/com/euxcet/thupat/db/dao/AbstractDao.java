@@ -11,8 +11,11 @@ import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.sql.UpdateResult;
 
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractDao {
+    private static Logger logger = LoggerFactory.getLogger(AbstractDao.class.getName());
     protected JDBCClient client;
 
     public AbstractDao(JDBCClient client) {
@@ -159,6 +162,45 @@ public abstract class AbstractDao {
                     done.handle(Future.succeededFuture(null));
                 } else {
                     done.handle(Future.succeededFuture(jsonArrayList.get(0)));
+                }
+            }
+        });
+    }
+
+    protected void commonGetOnes(String sql, JsonArray para, Handler<AsyncResult<JsonArray>> done) {
+        client.getConnection(conn -> {
+            if (conn.failed()) {
+                done.handle(Future.failedFuture(conn.cause()));
+            } else {
+                commonGetOne(conn.result(), sql, para, queryDone -> {
+                    if (queryDone.failed())
+                        done.handle(Future.failedFuture(queryDone.cause()));
+                    else
+                        done.handle(Future.succeededFuture(queryDone.result()));
+
+                    // and close the connection
+                    conn.result().close(closeDone -> {
+                        if (closeDone.failed()) {
+                            throw new RuntimeException(closeDone.cause());
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    protected void commonGetOnes(SQLConnection conn, String sql, JsonArray para, Handler<AsyncResult<JsonArray>> done) {
+
+        queryWithFuture(conn, sql, para, handler -> {
+            if (handler.failed()) {
+                done.handle(Future.failedFuture(handler.cause()));
+            } else {
+                List<JsonArray> jsonArrayList = handler.result().getResults();
+                if (jsonArrayList.isEmpty()) {
+                    done.handle(Future.succeededFuture(null));
+                } else {
+                    logger.info("size: " + jsonArrayList.size());
+                    done.handle(Future.succeededFuture(new JsonArray(jsonArrayList)));
                 }
             }
         });
