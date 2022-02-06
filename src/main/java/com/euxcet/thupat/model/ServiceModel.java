@@ -8,7 +8,7 @@ import java.util.Objects;
 public class ServiceModel {
 
     public enum ServiceType {
-        STUDY, SPORT, EAT, RELAX, REST
+        STUDY, SPORT, EAT, RELAX, REST, TRIP, INOUT
     }
 
     private int id;

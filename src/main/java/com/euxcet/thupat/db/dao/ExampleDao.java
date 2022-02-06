@@ -1,16 +1,22 @@
 package com.euxcet.thupat.db.dao;
 
 import com.euxcet.thupat.model.ExampleModel;
+import com.euxcet.thupat.model.ServiceModel;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonArray;
 import io.vertx.ext.jdbc.JDBCClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExampleDao extends AbstractDao {
+    private static Logger logger = LoggerFactory.getLogger(ExampleDao.class.getName());
     private final String INSERT_SQL = "INSERT INTO example_table (time, location) VALUES(?, ?)";
     private final String QUERY_BY_ID_SQL = "SELECT * FROM example_table WHERE id = ?";
     private final String DELETE_ONE_SQL = "DELETE FROM example_table WHERE id = ?";
+
+    private final String QUERY_SERVICE_BY_TYPE_SQL = "SELECT * FROM service_table WHERE type = ?";
 
     public ExampleDao(JDBCClient client) {
         super(client);
@@ -45,6 +51,29 @@ public class ExampleDao extends AbstractDao {
         return model;
     }
 
+    private ServiceModel parseService(JsonArray data) {
+        if (data == null) {
+            return null;
+        }
+        ServiceModel model = new ServiceModel();
+        
+        model.setId(data.getInteger(0));
+        model.setName(data.getString(1));
+        model.setType(data.getString(2));
+
+        final int length = data.size();
+        logger.info("length: " + length);
+        for (int idx = 0; idx < length; idx++) {
+            final Object item = data.getValue(idx);
+            if (item instanceof Integer) {
+                logger.info("int: " + (Integer) item);
+            } else if (item instanceof String) {
+                logger.info("String: " + item);
+            }
+        }
+        return model;
+    }
+
     public void getOne(long id, Handler<AsyncResult<ExampleModel>> done) {
         JsonArray para = new JsonArray();
         para.add(id);
@@ -59,16 +88,16 @@ public class ExampleDao extends AbstractDao {
         });
     }
 
-    public void getServices(long id, Handler<AsyncResult<ExampleModel>> done) {
+    public void getServices(String type, Handler<AsyncResult<ServiceModel>> done) {
         JsonArray para = new JsonArray();
-        para.add(id);
+        para.add(type);
 
-        commonGetOne(QUERY_BY_ID_SQL, para, result -> {
+        commonGetOne(QUERY_SERVICE_BY_TYPE_SQL, para, result -> {
             if (result.failed())
                 done.handle(Future.failedFuture(this.getClass().getName() + ": " + result.cause()));
             else {
                 JsonArray jsonArray = result.result();
-                done.handle(Future.succeededFuture(parse(jsonArray)));
+                done.handle(Future.succeededFuture(parseService(jsonArray)));
             }
         });
     }

@@ -2,6 +2,7 @@ package com.euxcet.thupat.db.proxy;
 
 import com.euxcet.thupat.db.dao.ExampleDao;
 import com.euxcet.thupat.model.ExampleModel;
+import com.euxcet.thupat.model.ServiceModel;
 import com.euxcet.thupat.event.ErrorCodes;
 import com.euxcet.thupat.event.EventConst;
 import com.google.gson.Gson;
@@ -96,12 +97,17 @@ public class ExampleProxy extends AbstractProxy {
         });
     }
 
+    // naive recommendation algorithm here
     private void getServices(Message<JsonObject> msg) {
         JsonObject data = msg.body().getJsonObject(EventConst.THUPAT_DB.REQ.KEYS.DATA);
-//        int id = data.getInteger(EventConst.THUPAT_DB.REQ.KEYS.ID);
-        int id = data.getInteger(EventConst.THUPAT_DB.REQ.KEYS.TIME);
+        String location = data.getString(EventConst.THUPAT_DB.REQ.KEYS.LOCATION);
+        long time = data.getLong(EventConst.THUPAT_DB.REQ.KEYS.TIME);
+        String type = "RELAX";
+        if(location.equals("Dorm")) type = "REST";
+        if(location.equals("Schoolgate")) type = "INOUT";
+        if(location.equals("Classroom")) type = "STUDY";
 
-        dao.getServices(id, handler -> {
+        dao.getServices(type, handler -> {
             if (handler.failed()) {
                 onFailure(msg, handler.cause(), logger);
             }
