@@ -31,6 +31,8 @@ public class THUPatResource {
         router.post("/delete-one").consumes("*/json").handler(this::deleteOne);
         router.get("/get-one").consumes("*/json").handler(this::getOne);
 
+        router.post("/get-services").consumes("*/json").handler(this::getServices);
+
         mainRouter.mountSubRouter(PATH, router);
         HttpUtils.dumpRestApi(router, PATH, logger);
     }
@@ -175,6 +177,47 @@ public class THUPatResource {
         deliveryOptions.addHeader(EventConst.HEADERS.ACTION, EventConst.THUPAT_WEB.REQ.ACTIONS.REVERSE);
 
         context.vertx().eventBus().<JsonObject>request(EventConst.THUPAT_WEB.ID, para, deliveryOptions, handler -> {
+            if (handler.failed()) {
+                response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                JsonObject res = new JsonObject();
+                res.put("code", HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                res.put("msg", handler.cause().getMessage());
+                response.end(res.encodePrettily());
+            }
+            else {
+                JsonObject rt = handler.result().body();
+                response.setStatusCode(HttpStatus.SC_OK);
+                response.end(rt.encodePrettily());
+            }
+        });
+    }
+
+    protected void getServices(RoutingContext context) {
+        HttpServerResponse response = context.response();
+        HttpUtils.setHttpHeader(response);
+
+        JsonObject request = context.getBodyAsJson();
+        if (request.getLong(EventConst.THUPAT_DB.REQ.KEYS.TIME) == null ||
+                request.getString(EventConst.THUPAT_DB.REQ.KEYS.LOCATION) == null) {
+            response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
+            JsonObject rt = new JsonObject();
+            rt.put("msg", "parameters cannot be null");
+            response.end(rt.encodePrettily());
+            return;
+        }
+
+        JsonObject data = new JsonObject()
+                .put(EventConst.THUPAT_DB.REQ.KEYS.TIME, request.getLong(EventConst.THUPAT_DB.REQ.KEYS.TIME))
+                .put(EventConst.THUPAT_DB.REQ.KEYS.LOCATION, request.getString(EventConst.THUPAT_DB.REQ.KEYS.LOCATION));
+
+        JsonObject para = new JsonObject()
+                .put(EventConst.THUPAT_DB.REQ.KEYS.DATA, data);
+
+        DeliveryOptions deliveryOptions = new DeliveryOptions();
+        deliveryOptions.setSendTimeout(DeliveryOptions.DEFAULT_TIMEOUT);
+        deliveryOptions.addHeader(EventConst.HEADERS.ACTION, EventConst.THUPAT_DB.REQ.ACTIONS.GET_SERVICES);
+
+        context.vertx().eventBus().<JsonObject>request(EventConst.THUPAT_DB.ID, para, deliveryOptions, handler -> {
             if (handler.failed()) {
                 response.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
                 JsonObject res = new JsonObject();

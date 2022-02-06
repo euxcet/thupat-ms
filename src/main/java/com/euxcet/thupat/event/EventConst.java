@@ -13,6 +13,7 @@ public interface EventConst {
                 String ADD_ONE = "add_one";
                 String DELETE_ONE = "delete_one";
                 String GET_ONE = "get_one";
+                String GET_SERVICES = "get_services";
             }
 
             interface KEYS {
@@ -20,6 +21,9 @@ public interface EventConst {
                 String DATA = "data";
                 String TIME = "time";
                 String LOCATION = "location";
+
+                String TYPE = "type";
+                String NAME = "name";
             }
         }
 

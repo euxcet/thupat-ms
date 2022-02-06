@@ -58,4 +58,18 @@ public class ExampleDao extends AbstractDao {
             }
         });
     }
+
+    public void getServices(long id, Handler<AsyncResult<ExampleModel>> done) {
+        JsonArray para = new JsonArray();
+        para.add(id);
+
+        commonGetOne(QUERY_BY_ID_SQL, para, result -> {
+            if (result.failed())
+                done.handle(Future.failedFuture(this.getClass().getName() + ": " + result.cause()));
+            else {
+                JsonArray jsonArray = result.result();
+                done.handle(Future.succeededFuture(parse(jsonArray)));
+            }
+        });
+    }
 }

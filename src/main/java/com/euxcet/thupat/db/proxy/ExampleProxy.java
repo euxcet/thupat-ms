@@ -36,6 +36,7 @@ public class ExampleProxy extends AbstractProxy {
             case EventConst.THUPAT_DB.REQ.ACTIONS.ADD_ONE -> addOne(msg);
             case EventConst.THUPAT_DB.REQ.ACTIONS.DELETE_ONE -> deleteOne(msg);
             case EventConst.THUPAT_DB.REQ.ACTIONS.GET_ONE -> getOne(msg);
+            case EventConst.THUPAT_DB.REQ.ACTIONS.GET_SERVICES -> getServices(msg);
             default -> msg.fail(ErrorCodes.INVALID_ACTION, "Invalid action (THUPatProxy): " + action);
         }
     }
@@ -84,6 +85,23 @@ public class ExampleProxy extends AbstractProxy {
         int id = data.getInteger(EventConst.THUPAT_DB.REQ.KEYS.ID);
 
         dao.getOne(id, handler -> {
+            if (handler.failed()) {
+                onFailure(msg, handler.cause(), logger);
+            }
+            else {
+                JsonObject obj = new JsonObject()
+                        .put(EventConst.THUPAT_DB.REPLY.COMMON_KEYS.RESULT, handler.result() != null ? gson.toJson(handler.result()) : null);
+                msg.reply(obj);
+            }
+        });
+    }
+
+    private void getServices(Message<JsonObject> msg) {
+        JsonObject data = msg.body().getJsonObject(EventConst.THUPAT_DB.REQ.KEYS.DATA);
+//        int id = data.getInteger(EventConst.THUPAT_DB.REQ.KEYS.ID);
+        int id = data.getInteger(EventConst.THUPAT_DB.REQ.KEYS.TIME);
+
+        dao.getServices(id, handler -> {
             if (handler.failed()) {
                 onFailure(msg, handler.cause(), logger);
             }
