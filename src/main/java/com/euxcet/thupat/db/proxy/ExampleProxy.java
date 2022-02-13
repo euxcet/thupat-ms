@@ -14,6 +14,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.jdbc.JDBCClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.Date;
 
 public class ExampleProxy extends AbstractProxy {
     private static Logger logger = LoggerFactory.getLogger(ExampleProxy.class.getName());
@@ -102,10 +103,16 @@ public class ExampleProxy extends AbstractProxy {
         JsonObject data = msg.body().getJsonObject(EventConst.THUPAT_DB.REQ.KEYS.DATA);
         String location = data.getString(EventConst.THUPAT_DB.REQ.KEYS.LOCATION);
         long time = data.getLong(EventConst.THUPAT_DB.REQ.KEYS.TIME);
+        JsonObject geo_location = data.getJsonObject(EventConst.THUPAT_DB.REQ.KEYS.GEO_LOCATION);
         String type = "RELAX";
         if(location.equals("Dorm")) type = "REST";
         if(location.equals("Schoolgate")) type = "INOUT";
         if(location.equals("Classroom")) type = "STUDY";
+        logger.info("time: " + time + ", which is " + new Date(time).toString());
+        logger.info("location: " + location);
+        // logger.info("geo location" + geo_location.toString());
+        JsonObject geo_data = geo_location.getJsonObject("data");
+        logger.info("geo location: (" + geo_data.getDouble("longitude") + ", " + geo_data.getDouble("latitude") + ")");
 
         dao.getServices(type, handler -> {
             if (handler.failed()) {

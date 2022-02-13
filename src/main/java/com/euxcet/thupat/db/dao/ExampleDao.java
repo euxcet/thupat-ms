@@ -58,7 +58,7 @@ public class ExampleDao extends AbstractDao {
             return null;
         }
         List<ServiceModel> serviceList = new ArrayList<ServiceModel>();
-        logger.info("length: " + data.size());
+        //logger.info("length: " + data.size());
         for (int i = 0; i < data.size(); i++) {
             ServiceModel model = new ServiceModel();
             JsonArray service = data.get(i);

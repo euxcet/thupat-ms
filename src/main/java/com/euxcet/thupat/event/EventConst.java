@@ -21,6 +21,7 @@ public interface EventConst {
                 String DATA = "data";
                 String TIME = "time";
                 String LOCATION = "location";
+                String GEO_LOCATION = "geo_location";
 
                 String TYPE = "type";
                 String NAME = "name";

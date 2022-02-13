@@ -198,7 +198,8 @@ public class THUPatResource {
 
         JsonObject request = context.getBodyAsJson();
         if (request.getLong(EventConst.THUPAT_DB.REQ.KEYS.TIME) == null ||
-                request.getString(EventConst.THUPAT_DB.REQ.KEYS.LOCATION) == null) {
+                request.getString(EventConst.THUPAT_DB.REQ.KEYS.LOCATION) == null ||
+                request.getJsonObject(EventConst.THUPAT_DB.REQ.KEYS.GEO_LOCATION) == null) {
             response.setStatusCode(HttpStatus.SC_BAD_REQUEST);
             JsonObject rt = new JsonObject();
             rt.put("msg", "parameters cannot be null");
@@ -208,7 +209,8 @@ public class THUPatResource {
 
         JsonObject data = new JsonObject()
                 .put(EventConst.THUPAT_DB.REQ.KEYS.TIME, request.getLong(EventConst.THUPAT_DB.REQ.KEYS.TIME))
-                .put(EventConst.THUPAT_DB.REQ.KEYS.LOCATION, request.getString(EventConst.THUPAT_DB.REQ.KEYS.LOCATION));
+                .put(EventConst.THUPAT_DB.REQ.KEYS.LOCATION, request.getString(EventConst.THUPAT_DB.REQ.KEYS.LOCATION))
+                .put(EventConst.THUPAT_DB.REQ.KEYS.GEO_LOCATION, request.getJsonObject(EventConst.THUPAT_DB.REQ.KEYS.GEO_LOCATION));
 
         JsonObject para = new JsonObject()
                 .put(EventConst.THUPAT_DB.REQ.KEYS.DATA, data);
